@@ -23,7 +23,7 @@ class ArticleFixtures extends Fixture
 
             $article->setTitre("Titre de l'article $i")
                     ->setContenu("<p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Error dolores similique harum recusandae modi magni earum atque maxime quisquam. Sunt quasi dolore nobis illum. Ea nostrum unde iste at? Eligendi.</p>")
-                    ->setImage("https://pixabay.com/get/g122ec3928ce9fa40112c0b78beefc8396c281110e50c42a8a3076559133f42270e9afde9c987fca97667873887afb8ba_640.jpg")
+                    ->setImage("https://picsum.photos/600/600")
                     ->setDate(new \DateTime());
 // persist() recupere les donnée c'est comme "prepare" il prepare la requete SQL  d'insertion,
 //// persist() : méthode issue de la classe ObjectManager permettant de préaprer et de garder en méméoire les requetes d'insertion
