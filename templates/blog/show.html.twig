@@ -23,6 +23,7 @@
           <div class="mb-1 text-muted">Posté le {{articleBDD.date|date('d/m/Y')}} à {{articleBDD.date|date('H:i:s')}}</div>
           <p class="card-text">{{articleBDD.contenu|raw}}</p>
           <a href="{{path('blog')}}">Retour aux articles</a>
+          <a href="{{path('blog_edit',{'id':articleBDD.id})}}">Modification</a>
         </div>
         <div class="col-md-5 d-none d-lg-block">
             <img src="{{articleBDD.image}}" class="col-md-12" alt="{{articleBDD.titre}}">
