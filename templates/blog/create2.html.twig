@@ -1,0 +1,54 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+
+Blog| Création d'un article
+    
+{% endblock %}
+
+{% block body %}
+
+<h1 class="text-center fst-italic">
+
+{# Si la condition IF renvoie TRUE, cela veut dire que editMode contient un ID d'un article, alors c'est une modification #}
+{# Sinon editMode ne contient aucun ID d'article, il renvoi FALSE, alors c'est une insertion, on entre dans le ESLE #}
+
+{% if editMode %}
+     Modification d'article
+
+{% else %}
+     Création d'article
+    
+{% endif %}
+
+</h1>
+
+{#  ouverture de la balise <form> + methode </form> #}
+
+{{ form_start(formArticle)}}
+
+
+     {#  => function twig permetant faire l'appel aux champ differants du formulaire pour pouvoir après d'ajouter notre <button>#}
+
+     {{ form_row(formArticle.titre)}} 
+
+     {{ form_row(formArticle.contenu)}}
+
+     {{ form_row(formArticle.image)}}
+
+     <button type="submit" class="btn btn-dark">
+
+     {% if editMode %}
+         Enregistrer les modification
+     {% else %}
+         Enregistrer
+     {% endif %}
+     
+     
+     
+     </button>
+
+
+{{form_end(formArticle)}}
+    
+{% endblock %}
