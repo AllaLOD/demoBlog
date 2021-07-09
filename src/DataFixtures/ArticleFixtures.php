@@ -2,7 +2,10 @@
 
 namespace App\DataFixtures;
 
+use DateTime;
 use App\Entity\Article;
+use App\Entity\Comment;
+use App\Entity\Category;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
@@ -13,29 +16,68 @@ class ArticleFixtures extends Fixture
     // Symfony se sert l'objet entité $article pour injecter les valeurs dans les requetes SQL
 
     public function load(ObjectManager $manager)
-    {
-        for($i = 1; $i <= 11; $i++)
+    {    // on importe la librairy Faker pour les fixture, pour creer fausses articles avec fausses noms , prenoms et ext
+        $faker = \Faker\Factory::create('fr_FR');
+
+        // creation de 3 category
+
+        for($cat = 1; $cat <= 3; $cat++)
         {
-            $article = new Article;
+            $category = new Category;
 
-// On fait appel aux setteurs de l'objet entité afin de renseigner les titres, les contenu, 
-//les images et les dates des faux articles stockés en BDD:
+            $category->setTitre($faker->word)
+                     ->setDescription($faker->paragraph());  // parametre sort de librairy "faker"
 
-            $article->setTitre("Titre de l'article $i")
-                    ->setContenu("<p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Error dolores similique harum recusandae modi magni earum atque maxime quisquam. Sunt quasi dolore nobis illum. Ea nostrum unde iste at? Eligendi.</p>")
-                    ->setImage("https://picsum.photos/600/600")
-                    ->setDate(new \DateTime());
-// persist() recupere les donnée c'est comme "prepare" il prepare la requete SQL  d'insertion,
-//// persist() : méthode issue de la classe ObjectManager permettant de préaprer et de garder en méméoire les requetes d'insertion
-// $data=$bdd->prepare("INSERT INTO article VALUES ('getTitre()', 'getContenu()' etc..."));
-// Un manager (ObjectManager) en Symfony est un classe permettant, entre autre, 
-//de manipuler les lignes de la BDD (INSERT, UPDATE, DELETE)
+            $manager->persist($category);
 
-            $manager->persist($article);       
-        } 
-            // flush() : méthode issue de la classe ObjectManager permettant véritablement d'executer les requetes d'insertions en BDD
+            // cretion de 4 à 10 article par category :
+            for($art = 1; $art <= mt_rand(4,10); $art++)
+            {
+
+                $contenu = '<p>' . join($faker->paragraphs(5), '</p><p>') . '</p>'; // on fait extrere les paragraphs de array pour avoir un string
+
+
+                $article = new Article;
+
+                $article->setTitre($faker->sentence())
+                        ->setContenu($contenu)
+                        ->setImage($faker->imageURL(600,600))
+                        ->setDate($faker->dateTimeBetween('-6 months'))
+                        ->setCategory($category);
+                
+                $manager->persist($article);
+
+                // creation de boucle de 4 à 10 commentaires pour chaque articles:
+
+                for($cmt = 1; $cmt <= mt_rand(4,10); $cmt++)
+                {
+                   // traitement de date :
+                    
+                    $now = new DateTime;
+                    $interval = $now->diff($article->getDate()); // retourne un time entre la date de creation et aujourd'hui
+
+                    $days = $interval->days; //retourn ele nombre de jours entre creation d'article et d'aujourdèhui
+
+                    $minimum = "-$days days";  // le but est d'avoir des dates des commentaires entre la date de creation d'articles et d'aujourdèhui
+
+                    // traitement des données :
+                    $comment = new Comment;
+
+                    $contenu = '<p>' . join($faker->paragraphs(2), '</p><p>') . '</p>'; 
+
+                    $comment->setAuteur($faker->name)
+                            ->setCommentaire($contenu)
+                            ->setDate($faker->dateTimeBetween($minimum))
+                            ->setArticle($article);
+
+                    $manager->persist($comment);
+                }
+            }
+        }
 
         $manager->flush();
+
+
     }
 
 }
