@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\Comment;
 use App\Form\ArticleType;
+use App\Form\CommentType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -141,6 +143,7 @@ class BlogController extends AbstractController
         //de remplir l'objet $article
 
         $formArticle = $this->createForm(ArticleType::class, $article);
+
         // // handleRequest() permet ici dans notre cas, de récupérer toute les données saisie dans le formulaire et
         // de les transmettre aux bon setteurs de l'entité $article 
         // handleRequest() renseigne chaque setteur de l'entité $article avec les données saisi dans le formulaire
@@ -156,7 +159,13 @@ class BlogController extends AbstractController
                 $article->setDate(new \DateTime());
             }
 
-            $manager->persist($article);
+
+         // persist() : méthode issue de l'interface EntityManagerInterface permettant de préparer et garder en mémmoire
+         // la requete d'insertion
+           $manager->persist($article);
+
+         // flush() : méthode issue de l'interface EntityManagerInterface permettant veritablement d'executer le requete
+         // d'insertion en BDD : $data->execute()
             $manager->flush();
 
             // après saisie nous avons redirection après insertion vers page blog_show
@@ -191,16 +200,30 @@ class BlogController extends AbstractController
      */
 
     //  dans le cas precis on peut tout simplifier car symfony comprend de quoi il sagie ,d'un article dans bdd
-    public function show(Article $article) : Response
+    public function show(Article $article, Request $request) : Response
+
     {   // importation de la classe Repository grace à méthode de "BlogController.php"
         // on met tout en commentaire ,car nous avons fait injection :
 
         // $repoArticles = $this->getDoctrine()->getRepository(Article::class);
         // $article = $repoArticles->find($id); // on recuper les détails de l'article grace à methode finde()
 
-        // dump($article);
+        // dump($request);
+
+
+        // on ajout traitement de commentaires d'article ( formulaire + insertion)
+
+        $comment = new Comment;
+
+        $formComment = $this->createForm(CommentType::class, $comment);
+
+        $formComment->handleRequest($request);
+
+        dump($comment);
+                      
         return $this->render('blog/show.html.twig', [
-            'articleBDD' => $article
+            'articleBDD' => $article,
+            'formComment' => $formComment->createView()
         ]);
     }
 }
