@@ -199,8 +199,9 @@ class BlogController extends AbstractController
      * @Route("/blog/{id}", name="blog_show")
      */
 
-    //  dans le cas precis on peut tout simplifier car symfony comprend de quoi il sagie ,d'un article dans bdd
-    public function show(Article $article, Request $request) : Response
+    //  dans le cas precis on peut tout simplifier car symfony comprend de quoi il sagie ,d'un article dans BDD
+    // methode "show" et ces ENTITES (classes) : Article et Request
+    public function show(Article $article, Request $request, EntityManagerInterface $manager) : Response
 
     {   // importation de la classe Repository grace à méthode de "BlogController.php"
         // on met tout en commentaire ,car nous avons fait injection :
@@ -211,18 +212,54 @@ class BlogController extends AbstractController
         // dump($request);
 
 
-        // on ajout traitement de commentaires d'article ( formulaire + insertion)
+        // on ajout TRETAIMENT DE COMMENTAIRE d'article ( formulaire + insertion)
 
         $comment = new Comment;
 
         $formComment = $this->createForm(CommentType::class, $comment);
 
-        $formComment->handleRequest($request);
+        $formComment->handleRequest($request);   //$comment->setAuteur('$_POST[auteur]') et $comment->setCommentaire('$_POST[commentaire]')
 
-        dump($comment);
+      
+
+        if($formComment->isSubmitted() && $formComment->isValid())
+        {
+
+
+            $comment->setDate(new \DateTime());
+
+            
+            // On établit la realtion entre le commentaire et l'article (clé étrangère)
+            // setArticle() : méthode issue de l'entité Comment qui permet de rensigner l'article associé au commentaire
+            // Cette méthode attends en argument l'objet entité Article de la BDD et non la clé étrangère elle même
+           
+            $comment->setArticle($article);
+    
+            $manager->persist($comment);
+
+            $manager->flush();
+
+            // dump($comment);
+            // méthode propre de symfony qui mermet de déclarer un message de validation stocké en session
+            // addFlash()  a avec arguments :
+  
+            $this->addFlash(
+               'success',
+               'Le commentaire a été posté avec succès !'
+            );
+
+            // Après l'insertion, on redirige l'internaute vers l'affichage de l'article afin de rebooter le formulaire
+
+            return $this->redirectToRoute('blog_show',[
+
+                'id' => $article->getId()
+            ]);
+
+        }
                       
         return $this->render('blog/show.html.twig', [
-            'articleBDD' => $article,
+            //   on transmet à template les données de l'article selectionné en BDD afin de les traiter avec la language twig dans la template
+            'articleBDD' => $article,   
             'formComment' => $formComment->createView()
         ]);
     }
