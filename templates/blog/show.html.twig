@@ -24,6 +24,19 @@
           <p class="card-text">{{articleBDD.contenu|raw}}</p>
           <a href="{{path('blog')}}">Retour aux articles</a>
           <a href="{{path('blog_edit',{'id':articleBDD.id})}}">Modification</a>
+          {# first agie à l'identique du [0]: il vient de chercher le 1 indix dans le tableau que on fait dans le BlogControllor #}
+          {#  nous avons supprimé pour un seul tag et nous avons fait une boucle pour afficher tout #}
+          
+          {% for tag in articleBDD.tags %}
+
+          <p>{{tag.name}}</p>
+            
+          {% endfor %}
+          
+
+
+
+
         </div>
         <div class="col-md-5 d-none d-lg-block">
             <img src="{{articleBDD.image}}" class="col-md-12" alt="{{articleBDD.titre}}">

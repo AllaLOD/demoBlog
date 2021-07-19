@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\Tag;
 use App\Entity\Article;
 use App\Entity\Category;
 use Symfony\Component\Form\AbstractType;
@@ -29,10 +30,19 @@ class ArticleType extends AbstractType
                 // Ce champ provient d'une autre entité : Category
                 
             ->add('category', EntityType::class,[
-                'class' => Category::class,     // on précise de quelle entité provient de ce champ
+                'class' => Category::class,     // on précise de quelle entité provient de ce champ ( on n'oubli pas d'importer la classe)
                 'choice_label' => 'titre'        // le contenu de la liste déroulante sera le titre des catégories
 
             ])
+
+            ->add('tags', EntityType::class,[
+                'class' => Tag::class,     // on précise de quelle entité provient de ce champ (onn'oubli pas d'importer la classe)
+                'choice_label' => 'name',        // le contenu de la liste déroulante sera le titre des tags
+                'multiple' => true                // nous avons ajouté 'multiple' true pour ne pas avoir de erreur
+
+            ])
+
+
             ->add('contenu', TextareaType::class, [
                 'label' => "Contenu d'article",
                 'required' => false,

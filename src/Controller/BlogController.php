@@ -151,13 +151,26 @@ class BlogController extends AbstractController
 
         $formArticle->handleRequest($request);
 
+        // dd($formArticle);
+
         if($formArticle->isSubmitted() && $formArticle->isValid())
         {
             // on appel setteur de date qui n'est pas rensegné dans le formulaire que dans le cas de creation de new articles:
 
             if (!$article->getId()) {
+
                 $article->setDate(new \DateTime());
             }
+
+
+            // on ajoute tretaiments pour pouvoir aficher les tags => recuperer le champe en particulier:
+            $tags = $formArticle->get('tags')->getData();
+
+            // dd($tags);      // on verifie le tableu de tags
+
+            $article->addTag($tags[0]);             // on recupere nos tags
+
+            // dd($article);
 
 
          // persist() : méthode issue de l'interface EntityManagerInterface permettant de préparer et garder en mémmoire

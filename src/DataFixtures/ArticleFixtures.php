@@ -47,7 +47,7 @@ class ArticleFixtures extends Fixture
                 
                 $manager->persist($article);
 
-                // creation de boucle de 4 à 10 commentaires pour chaque articles:
+                // creation de boucle de 4 à 10 commentaires(alleatoire) pour chaque articles:
 
                 for($cmt = 1; $cmt <= mt_rand(4,10); $cmt++)
                 {
