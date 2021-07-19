@@ -36,11 +36,15 @@ Blog| Création d'un article
 
      {{ form_row(formArticle.category,{'label': "Category d'article"})}}
 
+     {#  on fait appeler tags #}
+
+      {{ form_row(formArticle.tags)}}
+
      {{ form_row(formArticle.contenu)}}
 
      {{ form_row(formArticle.image)}}
 
-     <button type="submit" class="btn btn-dark">
+     <button type="submit" class="btn btn-dark">                
 
      {% if editMode %}
          Enregistrer les modification
