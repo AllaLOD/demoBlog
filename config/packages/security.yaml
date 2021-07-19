@@ -19,6 +19,14 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            # On indique à Symfony la classe permettant de s'authentifié (LoginFormAuthenticator), 
+            # Symfony va faire tout le travail pour nous et va contrôler au moment de la connexion, l'email et le mot de passe
+
+            custom_authenticator: App\Security\LoginFormAuthenticator
+            logout:
+                path: app_logout
+                # where to redirect after logout , on décommente et on rederige vers blog à la main
+                target: blog
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -29,5 +37,9 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
+        
+    #  on rederige les users qui sont pas admin à blog
+
+    access_denied_url: blog

@@ -1,0 +1,63 @@
+{% extends "base_admin.html.twig" %}
+
+{% block title %}
+
+   Blog| Gestion des articles
+    
+{% endblock %}
+
+{% block body %}
+
+    <h1 class="text-center">Liste des Articles</h1>
+        
+        {% for message in app.flashes('success') %}
+
+           <h4 class="text-center">{{message}}</h4>
+            
+        {% endfor %}
+
+
+    <table class="table table-bordered">
+        <tr>
+        {% for oneColonne in colonnes %}
+
+        {# upper: filtre twig permettant de mettre la chaine de caractères en majuscule #}
+
+
+             <th>{{ oneColonne|upper}}</th>
+            
+        {% endfor %}
+        <th>Categ</th>
+        <th>NB comment</th>
+        <th>Modifier</th>
+        <th>Supprimer</th>
+
+       </tr>
+
+       {% for oneArticle in articles %}
+
+             <tr>
+                <td>{{ oneArticle.id}}</td>
+                <td><a href="{{path('blog_show', {'id': oneArticle.id})}}">{{ oneArticle.titre}}</a></td>
+                <td>{{ oneArticle.contenu|striptags|slice(0,300) }}[...]</td>
+
+                <td><img src="{{oneArticle.image}}" alt="{{ oneArticle.titre}}" class="col-md-12 "></td>
+
+                <td>{{ oneArticle.date|date('d/m/Y à H:i:s')}}</td>
+                <td>{{ oneArticle.category.titre}}</td>
+                <td>{{ oneArticle.comments|length}}</td>  
+                {# on calcule le nombre de commentaites #}
+
+                <td>
+                     <a href="{{ path('blog_edit', {'id':oneArticle.id})}}" class="btn btn-dark"><i class="bi bi-pencil-square"></i></a>
+                </td>
+
+                <td><a href="{{path('admin_article_remove', {'id':oneArticle.id})}}" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                </td>
+
+             </tr>
+           
+       {% endfor %}
+    </table>
+    
+{% endblock %}
